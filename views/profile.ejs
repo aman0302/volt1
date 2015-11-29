@@ -7,6 +7,41 @@
     <style>
         body        { padding-top:80px; word-wrap:break-word; }
     </style>
+
+    <script>
+        $(document).ready(function() {
+            $(':checkbox').iphoneStyle({
+                onChange: function(elem,val) {
+                    if (val) {
+                        socket.emit('publish', {topic:"led",payload:"on"});
+                    } else {
+                        socket.emit('publish', {topic:"led",payload:"off"});
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        var socket = io.connect('192.168.1.116:5000');
+        socket.on('connect', function () {
+            socket.on('mqtt', function (msg) {
+                console.log(msg.topic+' '+msg.payload);
+                if (msg.payload == "off") {
+                    if ($('input[name=led]').is(':checked')) {
+                        $('input[name=led]').prop('checked',false).change();
+                    }
+                }
+                if (msg.payload == "on") {
+                    if (!$('input[name=led]').is(':checked')) {
+                        $('input[name=led]').prop('checked',true).change();
+                    }
+                }
+            });
+            socket.emit('subscribe',{topic:'led'});
+        });
+    </script>
+
 </head>
 <body>
 <div class="container">
@@ -47,6 +82,8 @@
         </div>
 
     </div>
+
+    <input name="led" checked='checked' class='yesno' type='checkbox' />
 
 </div>
 </body>

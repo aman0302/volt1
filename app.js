@@ -57,10 +57,36 @@ if (app.get('env') === 'development') {
   });
 }
 
+///////////////////////////////
+/*
 
 var mqtt_module = require("./mqtt/mqtt_connect");
 mqtt_module.mqtt_start();
 
+*/
+////////////////////////////////////
+var WebSocketServer = require("ws").Server
+var port = process.env.PORT || 5000
+var http = require("http")
+var server = http.createServer(app)
+server.listen(port)
+
+var wss = new WebSocketServer({server: server})
+console.log("websocket server created")
+
+wss.on("connection", function(ws) {
+  var id = setInterval(function() {
+    ws.send(JSON.stringify(new Date()), function() {  })
+  }, 1000)
+
+  console.log("websocket connection open")
+
+  ws.on("close", function() {
+    console.log("websocket connection close")
+    clearInterval(id)
+  })
+})
+/////////////////////////////////////////////////////
 
 
 module.exports = app;

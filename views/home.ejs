@@ -18,7 +18,7 @@
     <script type="text/javascript"
             src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script type="text/javascript">
-           
+           /*
             var socket = io.connect(window.location.hostname);//io.connect('http://localhost:5000');
         
             socket.on('connect', function () {
@@ -33,6 +33,17 @@
                 });
                 socket.emit('subscribe', {topic: '/fvolt/sensor'});
             });
+            */
+        
+        var host = location.origin.replace(/^http/, 'ws')
+var ws = new WebSocket(host);
+ws.onmessage = function (event) {
+    
+  var li = document.createElement('li');
+  li.innerHTML = JSON.parse(event.data);
+    document.getElementById('td1').innerHTML = event.data;
+  document.querySelector('#pings').appendChild(li);
+};
 
     </script>
 
@@ -108,6 +119,12 @@
     <button  onclick="subscribeTopic">Subscribe Topic</button>
     Publish to Topic: <input type="text" name="pubTopic">
     <button  onclick="publishTopic">Publish Topic</button>
+    
+    <table>
+        <tr>
+            <td id="td1"></td>
+        </tr>
+    </table>
 </div>
 </body>
 </html>

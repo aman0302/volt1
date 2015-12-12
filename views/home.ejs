@@ -18,16 +18,22 @@
     <script type="text/javascript"
             src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script type="text/javascript">
-        var socket = io.connect('http://localhost:5000');
-        socket.on('connect', function () {
-            socket.on('mqtt', function (msg) {
-                var elmarr = msg.topic.split("/");
-                var elm = elmarr[3];
-                console.log(msg.topic + ' ' + msg.payload);
-                $('#'.concat(elm)).html(msg.payload);
+           
+            var socket = io.connect(window.location.hostname);//io.connect('http://localhost:5000');
+        
+            socket.on('connect', function () {
+
+                socket.on('mqtt', function (msg) {
+                     
+                    var elmarr = msg.topic.split("/");
+                    var elm = elmarr[3];
+                    console.log(msg.topic + ' ' + msg.payload);
+                    alert(msg.topic + ' ' + msg.payload);
+                    $('#'.concat(elm)).html(msg.payload);
+                });
+                socket.emit('subscribe', {topic: '/fvolt/sensor'});
             });
-            socket.emit('subscribe', {topic: '/sensor/OTGW/returntemp'});
-        });
+
     </script>
 
 </head>
@@ -97,6 +103,11 @@
         </tr>
         </tbody>
     </table>
+
+    Subscribe to Topic: <input type="text" name="subTopic">
+    <button  onclick="subscribeTopic">Subscribe Topic</button>
+    Publish to Topic: <input type="text" name="pubTopic">
+    <button  onclick="publishTopic">Publish Topic</button>
 </div>
 </body>
 </html>

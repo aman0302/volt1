@@ -3,7 +3,7 @@ var net = require('net');
 var mqtt = require('mqtt');
 
 // create a socket object that listens on port 5000
-var io = require('socket.io').listen(5000);
+var io = require('socket.io').listen(app);
 
 // create an mqtt client object and connect to the mqtt broker
 
@@ -11,7 +11,10 @@ function mqtt_start() {
     console.log("calling mqtt");
     var client = mqtt.connect('mqtt://test.mosquitto.org');
 
-
+io.configure(function () {  
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10); 
+});
 
     io.sockets.on('connection', function (socket) {
         // socket connection indicates what mqtt topic to subscribe to in data.topic
